@@ -1,0 +1,33 @@
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#define DEST_IP "74.125.234.17"
+#define DEST_PORT 23
+
+int main(){
+
+	int sockfd;
+	struct sockaddr_in dest_addr;
+
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if(sockfd == -1){
+		perror("Socket");
+		exit(1);
+	}
+	dest_addr.sin_family = AF_INET;
+	dest_addr.sin_port = htons(DEST_PORT);
+	//dest_addr.sin_addr.s_addr = inet_addr(DEST_IP);
+	dest_addr.sin_addr.s_addr = htonl(INADDR_ANY);	
+	memset(&(dest_addr.sin_zero), '\0', 8);
+
+	int connectreturn = connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr));
+	if(connectreturn == -1){
+		perror("connect");
+		exit(1);
+	}
+	
+	return 0;
+}
